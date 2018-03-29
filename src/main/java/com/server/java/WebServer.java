@@ -10,36 +10,46 @@ public class WebServer extends Thread {
     private static ServerLogger logger = ServerLogger.getLogger(WebServer.class);
 
     private static final int DEFAULT_PORT = 8080;
-    private static final int N_THREADS = 3;
+    private static final int N_THREADS = 100;
 
     public static void main(String[] args) {
         try {
-            new WebServer().start(getValidPort(args));
+            int numRequests = 1000;
+            new WebServer().start(numRequests);
         } catch (Exception e) {
             logger.error("Startup error: " + e.getMessage(), e);
         }
     }
 
-    private void start(int port) {
-        try {
-            ServerSocket serverSocket = new ServerSocket(port);
-            System.out.println("WebServer listening on port " + port + " (press CTRL-C to quit)");
-            ExecutorService executor = Executors.newFixedThreadPool(N_THREADS);
-            while (true) {
-                executor.submit(new RequestHandler(serverSocket.accept()));
-            }
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-        }
-    }
+    private void start(int numRequests) {
+        ExecutorService executor = Executors.newFixedThreadPool(N_THREADS);
+        for (int i = 0; i < numRequests; i++) {
+            String[] params = new String[]{"curl", "http://127.0.0.1:8080"};
+            final ProcessBuilder process = new ProcessBuilder(params);
 
-    static int getValidPort(String[] args) {
-        if (args.length > 0) {
-            int port = Integer.parseInt(args[0]);
-            if (port > 0 && port < 65535) {
-                return port;
-            }
+            final int j = i + 1;
+            Runnable runnable = new Runnable() {
+                public void run() {
+                    try {
+                        System.out.println("Request no.: " + j);
+                        process.start();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            executor.execute(runnable);
         }
-        return DEFAULT_PORT;
+        executor.shutdown();
+//        try {
+//            ServerSocket serverSocket = new ServerSocket(DEFAULT_PORT);
+//            System.out.println("WebServer listening on port " + DEFAULT_PORT);
+//            ExecutorService executor = Executors.newFixedThreadPool(N_THREADS);
+//            while (true) {
+//                executor.submit(new RequestHandler(serverSocket.accept()));
+//            }
+//        } catch (IOException e) {
+//            logger.error(e.getMessage(), e);
+//        }
     }
 }
