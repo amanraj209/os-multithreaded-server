@@ -1,3 +1,8 @@
 .idea/
 out/
 target/
+.DS_Store
+src/.DS_Store
+src/main/java/com/.DS_Store
+src/main/java/com/server/.DS_Store
+src/main/java/com/server/java/.DS_Store

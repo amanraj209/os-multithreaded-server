@@ -1,4 +1,4 @@
-package com.server.java.ConcurrentTasks;
+package com.server.java;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
