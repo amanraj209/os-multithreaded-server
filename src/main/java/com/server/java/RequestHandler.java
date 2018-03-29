@@ -9,13 +9,20 @@ public class RequestHandler implements Runnable {
 
     private static ServerLogger logger = ServerLogger.getLogger(RequestHandler.class);
 
+    private String name;
     private Socket socket;
 
-    public RequestHandler(Socket socket) {
+    public RequestHandler(String name, Socket socket) {
+        this.name = name;
         this.socket = socket;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public void run() {
+        System.out.println("Executing: " + name);
         try {
             HttpRequest request = new HttpRequest(socket.getInputStream());
             HttpResponse response = new HttpResponse(request);

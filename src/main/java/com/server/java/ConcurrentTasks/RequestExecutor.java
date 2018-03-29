@@ -13,25 +13,26 @@ public class RequestExecutor {
     public static void main(String[] args) {
         Integer threadCounter = 0;
 
-        BlockingQueue<Runnable> blockingQueue = new ArrayBlockingQueue<Runnable>(50);
-        RequestThreadPoolExecutor executor = new RequestThreadPoolExecutor(50, 100, 2000, TimeUnit.MILLISECONDS, blockingQueue);
+        BlockingQueue<Runnable> blockingQueue = new ArrayBlockingQueue<Runnable>(1000);
+        RequestThreadPoolExecutor executor = new RequestThreadPoolExecutor(100, 500, 2000, TimeUnit.MILLISECONDS, blockingQueue);
 
         executor.setRejectedExecutionHandler(new RejectedExecutionHandler() {
 
             public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
-                System.out.println("DemoTask Rejected: " + ((ThreadRequest) r).getName());
+                System.out.println("ThreadTask Rejected: " + ((RequestHandler) r).getName());
                 System.out.println("Waiting for a second");
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                System.out.println("Let's add another time: " + ((ThreadRequest) r).getName());
+                System.out.println("Let's add another time: " + ((RequestHandler) r).getName());
                 executor.execute(r);
             }
         });
+
         int count = executor.prestartAllCoreThreads();
-        System.out.println("Core threads: " + count);
+        System.out.println("Core Threads: " + count);
 
         try {
             ServerSocket serverSocket = new ServerSocket(DEFAULT_PORT);
@@ -39,12 +40,10 @@ public class RequestExecutor {
 
             while (true) {
                 threadCounter++;
-                System.out.println("Adding DemoTask: " + threadCounter);
-//                executor.execute(new DemoThread(threadCounter.toString()));
+                System.out.println("Adding ThreadTask: " + threadCounter);
 
-                executor.execute(new RequestHandler(serverSocket.accept()));
+                executor.execute(new RequestHandler(threadCounter.toString(), serverSocket.accept()));
             }
-//            executor.shutdown();
         } catch (IOException e) {
             e.printStackTrace();
         }
