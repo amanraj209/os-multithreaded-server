@@ -14,8 +14,8 @@ public class ServerLogger {
         this.logger.addAppender(new ConsoleAppender());
     }
 
-    public static ServerLogger getLogger(Class cls) {
-        return new ServerLogger(cls.getName());
+    public static ServerLogger getLogger(String name) {
+        return new ServerLogger(name);
     }
 
     public void error(String message, Throwable throwable) {

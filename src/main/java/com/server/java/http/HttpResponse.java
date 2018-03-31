@@ -5,20 +5,20 @@ import com.server.java.http.utils.ContentType;
 import com.server.java.http.utils.Status;
 
 import java.io.*;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HttpResponse {
+public class HttpResponse implements Runnable {
 
-    private static ServerLogger logger = ServerLogger.getLogger(HttpResponse.class);
+    private static ServerLogger Log = ServerLogger.getLogger(HttpResponse.class.getSimpleName());
+    private static final String VERSION = "HTTP/1.0";
+    private HttpRequest request;
+    private Socket socket;
+    private byte[] body;
+    private List<String> headers = new ArrayList<String>();
 
-    public static final String VERSION = "HTTP/1.0";
-
-    List<String> headers = new ArrayList<String>();
-
-    byte[] body;
-
-    public HttpResponse(HttpRequest request) {
+    public void run() {
         switch (request.method) {
             case HEAD:
                 fillHeaders(Status._200);
@@ -52,12 +52,12 @@ public class HttpResponse {
                         setContentType(request.uri, headers);
                         fillResponse(getBytes(file));
                     } else {
-                        logger.info("File not found: " + request.uri);
+                        Log.info("File not found: " + request.uri);
                         fillHeaders(Status._400);
                         fillResponse(Status._400.toString());
                     }
                 } catch (Exception e) {
-                    logger.error(e.getMessage(), e);
+                    Log.error(e.getMessage(), e);
                     fillHeaders(Status._400);
                     fillResponse(Status._400.toString());
                 }
@@ -84,9 +84,9 @@ public class HttpResponse {
             }
             inputStream.close();
         } catch (FileNotFoundException e) {
-            logger.error(e.getMessage(), e);
+            Log.error(e.getMessage(), e);
         } catch (IOException e) {
-            logger.error(e.getMessage(), e);
+            Log.error(e.getMessage(), e);
         }
         return array;
     }
@@ -110,7 +110,7 @@ public class HttpResponse {
             String extension = uri.substring(uri.indexOf(".") + 1);
             list.add(ContentType.valueOf(extension.toUpperCase()).toString());
         } catch (Exception e) {
-            logger.error("ContentType not found: " + e.getMessage(), e);
+            Log.error("ContentType not found: " + e.getMessage(), e);
         }
     }
 
@@ -127,7 +127,19 @@ public class HttpResponse {
             dataOutputStream.writeBytes("\r\n");
             dataOutputStream.flush();
         } catch (IOException e) {
-            logger.error(e.getMessage(), e);
+            Log.error(e.getMessage(), e);
         }
+    }
+
+    public HttpResponse(HttpRequest request) {
+        this.request = request;
+    }
+
+    public Socket getSocket() {
+        return socket;
+    }
+
+    public void setSocket(Socket socket) {
+        this.socket = socket;
     }
 }

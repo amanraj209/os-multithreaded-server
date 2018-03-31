@@ -7,10 +7,12 @@ Some common algorithms and a genetic algorithm "Ant Colony Optimization" are tes
 
 ## How to run
 - `git clone https://github.com/amanraj209/os-multithreaded-server.git`
+- Install Maven
 - Run WebServer.java using terminal or any IDE
-- Visit localhost:8080
+- To install maven dependencies, run `maven install`.
+- To load test the server with 1000 users concurrently, run `mvn verify`.
 
-## License
+## License and Copyright
 MIT Licensed
 
 Copyright (c) 2018 [Aman](https://github.com/amanraj209) and [Arzoo Yadav](https://github.com/arzooy97)

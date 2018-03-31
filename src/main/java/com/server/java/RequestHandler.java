@@ -1,13 +1,12 @@
 package com.server.java;
 
 import com.server.java.http.HttpRequest;
-import com.server.java.http.HttpResponse;
 
 import java.net.Socket;
 
-public class RequestHandler implements Runnable {
+public class RequestHandler {
 
-    private static ServerLogger logger = ServerLogger.getLogger(RequestHandler.class);
+    private static ServerLogger Log = ServerLogger.getLogger(RequestHandler.class.getSimpleName());
 
     private String name;
     private Socket socket;
@@ -17,19 +16,15 @@ public class RequestHandler implements Runnable {
         this.socket = socket;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void run() {
+    public void start(RequestThreadPoolExecutor requestExecutor, RequestThreadPoolExecutor responseExecutor) {
         System.out.println("Executing: " + name);
         try {
             HttpRequest request = new HttpRequest(socket.getInputStream());
-            HttpResponse response = new HttpResponse(request);
-            response.write(socket.getOutputStream());
-            socket.close();
+            request.setResponseExecutor(responseExecutor);
+            request.setSocket(socket);
+            requestExecutor.execute(request);
         } catch (Exception e) {
-            logger.error("Runtime error: " + e.getMessage(), e);
+            Log.error("Runtime error: " + e.getMessage(), e);
         }
     }
 }
