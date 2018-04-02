@@ -1,4 +1,4 @@
-package com.server.java.http.utils;
+package com.server.java.utils;
 
 public enum Method {
 

@@ -1,7 +1,9 @@
 package com.server.java;
 
+import com.server.java.executor.PriorityExecutor;
 import com.server.java.http.HttpRequest;
 import com.server.java.http.HttpResponse;
+import com.server.java.utils.ServerLogger;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -17,8 +19,8 @@ public class WebServer extends Thread implements RejectedExecutionHandler {
         Integer threadCounter = 0;
 
         BlockingQueue<Runnable> blockingQueue = new LinkedBlockingQueue<Runnable>();
-        RequestThreadPoolExecutor requestExecutor = new RequestThreadPoolExecutor(500, 1000, 2000, TimeUnit.MILLISECONDS, blockingQueue);
-        RequestThreadPoolExecutor responseExecutor = new RequestThreadPoolExecutor(500, 1000, 2000, TimeUnit.MILLISECONDS, blockingQueue);
+        PriorityExecutor requestExecutor = new PriorityExecutor(500, 1000, 2000, TimeUnit.MILLISECONDS, blockingQueue);
+        PriorityExecutor responseExecutor = new PriorityExecutor(500, 1000, 2000, TimeUnit.MILLISECONDS, blockingQueue);
 
         requestExecutor.prestartAllCoreThreads();
         responseExecutor.prestartAllCoreThreads();

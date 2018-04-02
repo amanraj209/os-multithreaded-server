@@ -1,8 +1,8 @@
 package com.server.java.http;
 
-import com.server.java.RequestThreadPoolExecutor;
-import com.server.java.ServerLogger;
-import com.server.java.http.utils.Method;
+import com.server.java.executor.PriorityExecutor;
+import com.server.java.utils.ServerLogger;
+import com.server.java.utils.Method;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,13 +11,14 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public class HttpRequest implements Runnable {
 
     private static ServerLogger Log = ServerLogger.getLogger(HttpRequest.class.getSimpleName());
 
     private InputStream inputStream;
-    private RequestThreadPoolExecutor responseExecutor;
+    private PriorityExecutor responseExecutor;
     private Socket socket;
     private String version;
     private List<String> headers = new ArrayList<String>();
@@ -61,11 +62,11 @@ public class HttpRequest implements Runnable {
         this.inputStream = inputStream;
     }
 
-    public RequestThreadPoolExecutor getResponseExecutor() {
+    public PriorityExecutor getResponseExecutor() {
         return responseExecutor;
     }
 
-    public void setResponseExecutor(RequestThreadPoolExecutor responseExecutor) {
+    public void setResponseExecutor(PriorityExecutor responseExecutor) {
         this.responseExecutor = responseExecutor;
     }
 

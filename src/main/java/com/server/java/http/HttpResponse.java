@@ -1,8 +1,8 @@
 package com.server.java.http;
 
-import com.server.java.ServerLogger;
-import com.server.java.http.utils.ContentType;
-import com.server.java.http.utils.Status;
+import com.server.java.utils.ServerLogger;
+import com.server.java.utils.ContentType;
+import com.server.java.utils.Status;
 
 import java.io.*;
 import java.net.Socket;

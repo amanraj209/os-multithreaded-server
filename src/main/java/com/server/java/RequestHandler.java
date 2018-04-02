@@ -1,6 +1,8 @@
 package com.server.java;
 
+import com.server.java.executor.PriorityExecutor;
 import com.server.java.http.HttpRequest;
+import com.server.java.utils.ServerLogger;
 
 import java.net.Socket;
 
@@ -16,7 +18,7 @@ public class RequestHandler {
         this.socket = socket;
     }
 
-    public void start(RequestThreadPoolExecutor requestExecutor, RequestThreadPoolExecutor responseExecutor) {
+    public void start(PriorityExecutor requestExecutor, PriorityExecutor responseExecutor) {
         System.out.println("Executing: " + name);
         try {
             HttpRequest request = new HttpRequest(socket.getInputStream());
