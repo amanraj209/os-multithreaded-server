@@ -1,6 +1,5 @@
 package com.server.java;
 
-import com.server.java.executor.PriorityExecutor;
 import com.server.java.utils.ServerLogger;
 
 import java.io.IOException;
@@ -12,6 +11,8 @@ import java.util.concurrent.*;
 public class WebServer {
 
     private static final int DEFAULT_PORT = 8080;
+    private static final int DEFAULT_PRIORITY = 0;
+    private static final int DEFAULT_TIME_QUANTUM = 30;
 
     private static ServerLogger Log = ServerLogger.getLogger(WebServer.class.getSimpleName());
 
@@ -28,6 +29,7 @@ public class WebServer {
                 int requestCounter = 0;
                 System.out.println("1: First In First Out Scheduling");
                 System.out.println("2: Shortest Job First Priority Scheduling");
+                System.out.println("3: Round Robin Scheduling");
                 System.out.println("Enter your choice: ");
                 int choice = scanner.nextInt();
 
@@ -35,6 +37,8 @@ public class WebServer {
                     firstInFirstOut(requestCounter);
                 } else if (choice == 2) {
                     shortestJobFirstPriority(requestCounter);
+                } else if (choice == 3) {
+                    roundRobinScheduling(requestCounter);
                 } else {
                     System.out.println("Invalid Choice.");
                 }
@@ -54,9 +58,8 @@ public class WebServer {
         while (true) {
             requestCounter++;
             try {
-                int priority = 0;
-                RequestHandler handler = new RequestHandler(requestCounter, priority, serverSocket.accept());
-                System.out.println("Request: " + requestCounter + " Priority: " + priority);
+                RequestHandler handler = new RequestHandler(requestCounter, serverSocket.accept());
+                System.out.println("Request: " + requestCounter);
                 executor.execute(handler);
             } catch (IOException e) {
                 Log.error("Runtime error: " + e.getMessage(), e);
@@ -76,15 +79,31 @@ public class WebServer {
             requestCounter++;
             int priority = random.nextInt(10);
             try {
-                final RequestHandler handler = new RequestHandler(requestCounter, priority, serverSocket.accept());
+                RequestHandler handler = new RequestHandler(requestCounter, priority, serverSocket.accept());
                 System.out.println("Request: " + requestCounter + " Priority: " + priority);
-                Future<RequestHandler> task = executor.submit(new Callable<RequestHandler>() {
-                    @Override
-                    public RequestHandler call() throws Exception {
-                        handler.start();
-                        return handler;
-                    }
-                }, priority);
+                executor.execute(handler);
+            } catch (IOException e) {
+                Log.error("Runtime error: " + e.getMessage(), e);
+            }
+        }
+    }
+
+    private static void roundRobinScheduling(int requestCounter) {
+        System.out.println("Round Robin Scheduling");
+        PriorityBlockingQueue<Runnable> blockingQueue = new PriorityBlockingQueue<Runnable>();
+        PriorityExecutor executor = new PriorityExecutor(1, 2, 2000, TimeUnit.MILLISECONDS, blockingQueue);
+        executor.prestartAllCoreThreads();
+
+        Random random = new Random(501);
+
+        while (true) {
+            requestCounter++;
+            try {
+                int executionTime = random.nextInt(10) * 10;
+                RequestHandler handler = new RequestHandler(requestCounter, DEFAULT_PRIORITY, DEFAULT_TIME_QUANTUM, executionTime, serverSocket.accept());
+                handler.setBlockingQueue(blockingQueue);
+                System.out.println("Request: " + requestCounter + " Time Quantum: " + DEFAULT_TIME_QUANTUM);
+                executor.execute(handler);
             } catch (IOException e) {
                 Log.error("Runtime error: " + e.getMessage(), e);
             }
