@@ -2,7 +2,6 @@ package com.server.java;
 
 import com.server.java.executor.PriorityExecutor;
 import com.server.java.utils.ServerLogger;
-import org.bouncycastle.ocsp.Req;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -10,7 +9,7 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.concurrent.*;
 
-public class WebServer extends Thread implements RejectedExecutionHandler {
+public class WebServer {
 
     private static final int DEFAULT_PORT = 8080;
 
@@ -90,17 +89,5 @@ public class WebServer extends Thread implements RejectedExecutionHandler {
                 Log.error("Runtime error: " + e.getMessage(), e);
             }
         }
-    }
-
-    public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
-        System.out.println("ThreadTask Rejected: " + ((RequestHandler) r).getRequestNo());
-        System.out.println("Waiting for a second");
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        System.out.println("Let's add another time: " + ((RequestHandler) r).getRequestNo());
-        executor.execute(r);
     }
 }
