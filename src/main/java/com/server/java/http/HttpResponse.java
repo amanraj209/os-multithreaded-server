@@ -5,20 +5,17 @@ import com.server.java.utils.ContentType;
 import com.server.java.utils.Status;
 
 import java.io.*;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HttpResponse implements Runnable {
+public class HttpResponse {
 
     private static ServerLogger Log = ServerLogger.getLogger(HttpResponse.class.getSimpleName());
     private static final String VERSION = "HTTP/1.0";
-    private HttpRequest request;
-    private Socket socket;
     private byte[] body;
     private List<String> headers = new ArrayList<String>();
 
-    public void run() {
+    public HttpResponse(HttpRequest request) {
         switch (request.method) {
             case HEAD:
                 fillHeaders(Status._200);
@@ -129,17 +126,5 @@ public class HttpResponse implements Runnable {
         } catch (IOException e) {
             Log.error(e.getMessage(), e);
         }
-    }
-
-    public HttpResponse(HttpRequest request) {
-        this.request = request;
-    }
-
-    public Socket getSocket() {
-        return socket;
-    }
-
-    public void setSocket(Socket socket) {
-        this.socket = socket;
     }
 }
