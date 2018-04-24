@@ -15,9 +15,3 @@ Scheduling algorithms are tested on this web server are:
 - Run WebServer.java using terminal or any IDE.
 - To install maven dependencies, run `mvn install`.
 - To load test the server with 1000 users concurrently, run `mvn verify`.
-
-## License and Copyright
-MIT Licensed
-
-Copyright (c) 2018 [Aman](https://github.com/amanraj209) and [Arzoo Yadav](https://github.com/arzooy97)
-
