@@ -3,7 +3,11 @@ In this project repository, a multithreaded web server is implemented in Java to
 
 This web server's performance to handle multiple requests is evaluated by comparing several scheduling algorithms used
 in Operating Systems.
-Some common algorithms and a genetic algorithm "Ant Colony Optimization" are tested on this web server.
+
+Scheduling algorithms are tested on this web server are:
+- First Come First Serve Scheduling
+- Shortest Job First Priority Scheduling
+- Round Robin Scheduling
 
 ## How to run
 - `git clone https://github.com/amanraj209/os-multithreaded-server.git`.
