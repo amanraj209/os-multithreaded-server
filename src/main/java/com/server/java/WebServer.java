@@ -52,7 +52,7 @@ public class WebServer {
     private static void firstInFirstOut(int requestCounter) {
         System.out.println("First In First Out Scheduling");
         BlockingQueue<Runnable> blockingQueue = new LinkedBlockingQueue<Runnable>();
-        PriorityExecutor executor = new PriorityExecutor(1, 2, 2000, TimeUnit.MILLISECONDS, blockingQueue);
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(1, 2, 2000, TimeUnit.MILLISECONDS, blockingQueue);
         executor.prestartAllCoreThreads();
 
         while (true) {
@@ -70,7 +70,7 @@ public class WebServer {
     private static void shortestJobFirstPriority(int requestCounter) {
         System.out.println("Shortest Job First Priority Scheduling");
         PriorityBlockingQueue<Runnable> blockingQueue = new PriorityBlockingQueue<Runnable>();
-        PriorityExecutor executor = new PriorityExecutor(1, 2, 2000, TimeUnit.MILLISECONDS, blockingQueue);
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(1, 2, 2000, TimeUnit.MILLISECONDS, blockingQueue);
         executor.prestartAllCoreThreads();
 
         Random random = new Random(501);
@@ -91,7 +91,7 @@ public class WebServer {
     private static void roundRobinScheduling(int requestCounter) {
         System.out.println("Round Robin Scheduling");
         PriorityBlockingQueue<Runnable> blockingQueue = new PriorityBlockingQueue<Runnable>();
-        PriorityExecutor executor = new PriorityExecutor(1, 2, 2000, TimeUnit.MILLISECONDS, blockingQueue);
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(1, 2, 2000, TimeUnit.MILLISECONDS, blockingQueue);
         executor.prestartAllCoreThreads();
 
         Random random = new Random(501);
